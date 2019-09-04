@@ -10,10 +10,8 @@ public class UDPServer{
 		byte[] buffer = new byte[1000];
  		while(true){
  		    DatagramPacket request = new DatagramPacket(buffer, buffer.length);
-  		   aSocket.receive(request);     
-    		   DatagramPacket reply = new DatagramPacket(request.getData(), 
-		   	request.getLength(), request.getAddress(), request.getPort());
-		   aSocket.send(reply);
+  		   aSocket.receive(request);
+  		 System.out.println("Request: " + new String(request.getData()));
 		}
 	    }catch (SocketException e){System.out.println("Socket: " + e.getMessage());
 	   }catch (IOException e) {System.out.println("IO: " + e.getMessage());}
