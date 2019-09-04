@@ -1,5 +1,3 @@
-package udp;
-
 import java.net.*;
 import java.io.*;
 
