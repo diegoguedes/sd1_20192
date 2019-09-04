@@ -12,12 +12,7 @@ public class UDPClient {
 			InetAddress aHost = InetAddress.getByName(args[1]);
 			int serverPort = 6789;
 			DatagramPacket request = new DatagramPacket(m, args[0].length(), aHost, serverPort);
-			aSocket.send(request);
-			byte[] buffer = new byte[1000];
-			DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
-			aSocket.setSoTimeout(200);
-			aSocket.receive(reply);
-			System.out.println("Reply: " + new String(reply.getData()));
+			aSocket.send(request);			
 		} catch (SocketException e) {
 			System.out.println("Socket: " + e.getMessage());
 		} catch (IOException e) {
