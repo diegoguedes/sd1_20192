@@ -1,19 +1,20 @@
 package br.com.diego.banco;
 
-/**
- * Hello world!
- *
- */
-public class Main 
-{
-    public static void main( String[] args )
-    {
-       ContaDAO conta = new ContaDAOImplementacao();
-       
-       String nome1 = conta.consultar("Diego");
-       String nome2 = conta.consultar("Guedes");
-       
-       System.out.println(nome1);
-       System.out.println(nome2);
-    }
+import java.math.BigDecimal;
+
+public class Main {
+	public static void main(String[] args) {
+		ContaDAOImplementacao contaDAO = new ContaDAOImplementacao();
+
+		Conta contaJoao = new Conta();
+		contaJoao.setId(6);
+		contaJoao.setNome("José");
+		contaJoao.setSaldo(new BigDecimal(100));
+
+		contaDAO.inserir(contaJoao);
+
+		Conta contaJoaoConsulta = contaDAO.consultar("José");
+		System.out.println(contaJoaoConsulta.toString());
+
+	}
 }
