@@ -5,37 +5,81 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class ContaDAOImplementacao implements ContaDAO {
 
-	public String consultar(String nome) {
+	public Conta consultar(String nome) {
 		PreparedStatement ps = null;
 		ResultSet rs;
-        String url;
-        Connection conexaoBanco = null;
-        try {
-        	url = "jdbc:postgresql://localhost/teste?user=postgres&password=diego";
-        	conexaoBanco = DriverManager.getConnection(url);
-            ps = conexaoBanco.prepareStatement("select nome from conta where nome = ?");
-            ps.setString(1, nome);
-            rs = ps.executeQuery();
-            
-            if (rs.next()) {            	
-                return rs.getString("nome");
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } finally {
-            if (conexaoBanco != null) {
-                try {
-                	conexaoBanco.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+		String url;
+		Connection conexaoBanco = null;
+		Conta conta;
+		try {
+			url = "jdbc:postgresql://172.16.5.67/banco?user=postgres&password=diego";
+			conexaoBanco = DriverManager.getConnection(url);
+			ps = conexaoBanco.prepareStatement("select id, nome, saldo from contas where nome=?");
+			ps.setString(1, nome);
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				conta = new Conta();
+
+				conta.setId(rs.getInt("id"));
+				conta.setNome(rs.getString("nome"));
+				conta.setSaldo(rs.getBigDecimal("saldo"));
+
+				return conta;
+			} else {
+				return null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		} finally {
+			if (conexaoBanco != null) {
+				try {
+					conexaoBanco.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
+
+	public boolean inserir(Conta conta) {
+		PreparedStatement ps = null;
+		int rs;
+		String url;
+		Connection conexaoBanco = null;
+		try {
+			url = "jdbc:postgresql://172.16.5.67/banco?user=postgres&password=diego";
+			conexaoBanco = DriverManager.getConnection(url);
+			ps = conexaoBanco.prepareStatement("insert into contas (id, nome, saldo) values (?,?,?)");
+			ps.setInt(1, conta.getId());
+			ps.setString(2, conta.getNome());
+			ps.setBigDecimal(3, conta.getSaldo());
+			rs = ps.executeUpdate();
+
+			if (rs > 0) {
+
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		} finally {
+			if (conexaoBanco != null) {
+				try {
+					conexaoBanco.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
 }
