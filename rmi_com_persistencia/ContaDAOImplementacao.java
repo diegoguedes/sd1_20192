@@ -16,7 +16,7 @@ public class ContaDAOImplementacao implements ContaDAO {
 		Connection conexaoBanco = null;
 		Conta conta;
 		try {
-			url = "jdbc:postgresql://172.16.5.67/banco?user=postgres&password=diego";
+			url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
 			conexaoBanco = DriverManager.getConnection(url);
 			ps = conexaoBanco.prepareStatement("select id, nome, saldo from contas where nome=?");
 			ps.setString(1, nome);
@@ -53,7 +53,7 @@ public class ContaDAOImplementacao implements ContaDAO {
 		String url;
 		Connection conexaoBanco = null;
 		try {
-			url = "jdbc:postgresql://172.16.5.67/banco?user=postgres&password=diego";
+			url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
 			conexaoBanco = DriverManager.getConnection(url);
 			ps = conexaoBanco.prepareStatement("insert into contas (id, nome, saldo) values (?,?,?)");
 			ps.setInt(1, conta.getId());
@@ -67,6 +67,75 @@ public class ContaDAOImplementacao implements ContaDAO {
 			} else {
 				return false;
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		} finally {
+			if (conexaoBanco != null) {
+				try {
+					conexaoBanco.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
+	public Conta consultar(Integer id) {
+		PreparedStatement ps = null;
+		ResultSet rs;
+		String url;
+		Connection conexaoBanco = null;
+		Conta conta;
+		try {
+			url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
+			conexaoBanco = DriverManager.getConnection(url);
+			ps = conexaoBanco.prepareStatement("select id, nome, saldo from contas where id=?");
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				conta = new Conta();
+
+				conta.setId(rs.getInt("id"));
+				conta.setNome(rs.getString("nome"));
+				conta.setSaldo(rs.getBigDecimal("saldo"));
+
+				return conta;
+			} else {
+				return null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		} finally {
+			if (conexaoBanco != null) {
+				try {
+					conexaoBanco.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
+	public boolean excluir(Conta conta) {
+		PreparedStatement ps = null;
+		String url;
+		Connection conexaoBanco = null;
+		try {
+			url = "jdbc:postgresql://172.16.5.130/banco?user=postgres&password=diego";
+			conexaoBanco = DriverManager.getConnection(url);
+			ps = conexaoBanco.prepareStatement("delete from contas where id=?");
+			ps.setInt(1, conta.getId());
+
+			if (ps.executeUpdate() > 0)
+				return true;
+			else
+				return false;
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
